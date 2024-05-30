@@ -19,6 +19,12 @@ Now let's set up the sysroot and get the compilers. Everything will be contained
 ./init
 ```
 
+In case the `debootstrap` step fails, it may be necessary to register `qemu-arm-static` using the following command.
+
+```bash
+echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
+```
+
 That's all. Finally you just have to add the following lines to your `CMakeLists.txt`.
 
 ```cmake
