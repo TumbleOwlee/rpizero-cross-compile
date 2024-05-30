@@ -8,7 +8,7 @@ header() {
     echo ""
 }
 
-if [ -x sudo ] && [ "_$(whoami)" != "root" ]; then
+if [ "_$(which sudo)" != "_" ] && [ "_$(whoami)" != "root" ]; then
     SUDO=sudo
 fi
 
@@ -18,7 +18,7 @@ CHROOT_DIR="$(pwd)/env/chroot/armv6"
 ## Install requirements
 header "Install requirements"
 $SUDO apt-get update || exit 1
-$SUDO apt-get install -y qemu-user-static binfmt-support debootstrap schroot xz-utils || exit 1
+$SUDO apt-get install -y qemu-user-static binfmt-support debootstrap schroot xz-utils cmake || exit 1
 
 # Install cross compiler
 header "Retrieve cross compiler"
