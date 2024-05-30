@@ -22,6 +22,8 @@ Now let's set up the sysroot and get the compilers. Everything will be contained
 ./init --env=./path/to/some/dir --version=bookworm --compiler=12
 ```
 
+Keep in mind, if you specify a custom path using `--env`, you will also have to change the paths in the `CMakeLists.txt`.
+
 In case the `debootstrap` step fails, it may be necessary to register `qemu-arm-static` using the following command.
 
 ```bash
