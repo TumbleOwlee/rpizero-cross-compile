@@ -8,12 +8,47 @@ header() {
     echo ""
 }
 
+ENV="$(pwd)/env"
+VERSION="bookworm"
+COMPILER="12"
+
+for i in "$@"; do
+    case $i in
+        -h|--help)
+            echo ""
+            echo "  Usage: ./init [OPTIONS]"
+            echo ""
+            echo "  Options:"
+            echo "    -h, --help        Display help message."
+            echo "    -e, --env         Environment path to install into [default: $(pwd)/$ENV]."
+            echo "    -v, --version     Distribution version [default: $VERSION]."
+            echo "    -c, --compiler    Compiler version to install [default: $COMPILER]."
+            echo ""
+            exit 0
+            ;;
+        -e=*|--env=*)
+            ENV="${i#*=}"
+            ;;
+        -v=*|--version=*)
+            VERSION="${i#*=}"
+            ;;
+        -c=*|--compiler=*)
+            COMPILER="${i#*=}"
+            ;;
+    esac
+done
+
+echo ""
+echo "  Using environment: $ENV"
+echo "  Using distribution version: $VERSION"
+echo "  Using compiler version: $COMPILER"
+
 if [ "_$(which sudo)" != "_" ] && [ "_$(whoami)" != "root" ]; then
     SUDO=sudo
 fi
 
-COMPILER_DIR="$(pwd)/env/compiler/armv6"
-CHROOT_DIR="$(pwd)/env/chroot/armv6"
+COMPILER_DIR="$ENV/compiler/armv6"
+CHROOT_DIR="$ENV/chroot/armv6"
 
 ## Install requirements
 header "Install requirements"
@@ -23,14 +58,14 @@ $SUDO apt-get install -y qemu-user-static binfmt-support debootstrap schroot xz-
 # Install cross compiler
 header "Retrieve cross compiler"
 mkdir -p "$COMPILER_DIR"
-wget https://github.com/tttapa/docker-arm-cross-toolchain/releases/latest/download/x-tools-armv6-rpi-linux-gnueabihf-gcc12.tar.xz -O- | tar xJ -C "$COMPILER_DIR" || exit 1
+wget "https://github.com/tttapa/docker-arm-cross-toolchain/releases/latest/download/x-tools-armv6-rpi-linux-gnueabihf-gcc$COMPILER.tar.xz" -O- | tar xJ -C "$COMPILER_DIR" || exit 1
 export PATH="$COMPILER_DIR/x-tools/armv6-rpi-linux-gnueabihf/bin:$PATH"
 
 # Set up sysroot
 header "Set up SYSROOT"
 mkdir -p "$CHROOT_DIR" &>/dev/null
 # Perform first stage of bootstrap
-$SUDO debootstrap --arch armhf --foreign --no-check-gpg bookworm "$CHROOT_DIR" http://ftp.acc.umu.se/mirror/raspbian/raspbian/ || exit 1
+$SUDO debootstrap --arch armhf --foreign --no-check-gpg $VERSION "$CHROOT_DIR" http://ftp.acc.umu.se/mirror/raspbian/raspbian/ || exit 1
 # Copy qemu executables into chroot to be able to execute armv6 programs
 $SUDO cp /usr/bin/qemu-arm* "$CHROOT_DIR/usr/bin" || exit 1
 # Perform second stage to install packages
