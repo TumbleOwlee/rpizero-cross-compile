@@ -16,6 +16,7 @@ if(RASPBERRY)
     set(CMAKE_SYSROOT "${CMAKE_CURRENT_SOURCE_DIR}/env/chroot/armv6")
     set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}")
     set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/env/compiler/armv6/x-tools/armv6-rpi-linux-gnueabihf/armv6-rpi-linux-gnueabihf.toolchain.cmake")
+    set(CMAKE_PROGRAM_PATH "${CMAKE_CURRENT_SOURCE_DIR}/env/chroot/armv6/usr/bin")
 endif()
 
 # Define project

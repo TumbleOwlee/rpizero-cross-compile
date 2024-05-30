@@ -1,4 +1,4 @@
-# RPi Zero Cross Compilation
+# RPi Zero (armv6) Cross Compilation
 
 This repository contains a working example of cross compilation on a x86_64 host system to the Raspberry Pi Zero (armv6).
 
