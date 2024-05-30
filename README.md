@@ -17,6 +17,9 @@ Now let's set up the sysroot and get the compilers. Everything will be contained
 
 ```bash
 ./init
+
+# Or alternatively, if you would like to customize some options (see --help)
+./init --env=./path/to/some/dir --version=bookworm --compiler=12
 ```
 
 In case the `debootstrap` step fails, it may be necessary to register `qemu-arm-static` using the following command.
