@@ -4,7 +4,7 @@ This repository contains a working example of cross compilation on a x86_64 host
 
 ## Quickstart
 
-First, clone the repository and initialize all submodules. We are using [Sentry Native](https://github.com/getsentry/sentry-native) as an example.
+First, clone the repository and initialize all submodules. We are using [Sentry Native](https://github.com/getsentry/sentry-native) as an example since it provides everything any other possible dependency might have or use - it's compiled from source but requires some dependencies besides the standard library (`curl` and `zlib`).
 
 ```bash
 git clone https://github.com/TumbleOwlee/rpizero-cross-compile.git
@@ -36,4 +36,10 @@ That's all. Finally you just have to add the following lines to your `CMakeLists
 set(CMAKE_SYSROOT "${CMAKE_CURRENT_SOURCE_DIR}/env/chroot/armv6")
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}")
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/env/compiler/armv6/x-tools/armv6-rpi-linux-gnueabihf/armv6-rpi-linux-gnueabihf.toolchain.cmake")
+```
+
+In case you apply this setup to your own project with other or additional dependencies, you will have to install them in your sysroot. You can run `apt-get install` in your sysroot, using the following command.
+
+```bash
+sudo chroot ./env/chroot/armv6 /use/bin/apt-get install <packages>
 ```
