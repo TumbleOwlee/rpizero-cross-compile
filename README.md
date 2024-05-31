@@ -13,22 +13,19 @@ git submodule update --init --recursive
 
 Next, we have to setup the sysroot and get the cross compiler. Keep in mind that you can **not** use the cross compilers from the official repositories, since they will most likely have dropped support of `armv6` and will be compiled with `--with-arch=armv7-a+fp`. That makes them useless for the older Raspberry Pi Zero. This repository contains a script that will retrieve the compiler from [tttapa/docker-arm-cross-toolchain](https://github.com/tttapa/docker-arm-cross-toolchain/) and will set up the sysroot using a raspbian mirror. Check the script for more details.
 
-Now let's set up the sysroot and get the compilers. Everything will be contained in the `./env` subdirectory.
+Now let's set up the sysroot and get the compilers. Everything will be contained in the `./env` subdirectory. Since we have to use `qemu-arm-static` for the sysroot, we also have to register it to `binfmt_misc`. Thus, you have to run the following commands.
 
 ```bash
-./init
+# Register qemu-arm-static
+./exec register
 
+# Install the compiler and set up sysroot
+./exec install
 # Or alternatively, if you would like to customize some options (see --help)
-./init --env=./path/to/some/dir --version=bookworm --compiler=12
+./exec install --env=./path/to/some/dir --version=bookworm --compiler=12
 ```
 
 Keep in mind, if you specify a custom path using `--env`, you will also have to change the paths in the `CMakeLists.txt`.
-
-In case the `debootstrap` step fails, it may be necessary to register `qemu-arm-static` using the following command.
-
-```bash
-echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
-```
 
 That's all. Finally you just have to add the following lines to your `CMakeLists.txt`.
 
@@ -37,6 +34,8 @@ set(CMAKE_SYSROOT "${CMAKE_CURRENT_SOURCE_DIR}/env/chroot/armv6")
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}")
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/env/compiler/armv6/x-tools/armv6-rpi-linux-gnueabihf/armv6-rpi-linux-gnueabihf.toolchain.cmake")
 ```
+
+If you would like to unregister the `qemu-arm-static`, just execute `./exec unregister`.
 
 In case you apply this setup to your own project with other or additional dependencies, you will have to install them in your sysroot. You can run `apt-get install` in your sysroot, using the following command.
 
