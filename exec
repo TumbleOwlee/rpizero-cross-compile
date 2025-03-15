@@ -85,7 +85,7 @@ elif [ "_$COMMAND" == "_register" ]; then
         case $i in
             -h|--help)
                 echo ""
-                echo "  Usage: ./exec install [OPTIONS]"
+                echo "  Usage: ./exec register [OPTIONS]"
                 echo ""
                 echo "    This will register the qemu-arm-static interpreter."
                 echo ""
@@ -108,7 +108,7 @@ elif [ "_$COMMAND" == "_unregister" ]; then
         case $i in
             -h|--help)
                 echo ""
-                echo "  Usage: ./exec install [OPTIONS]"
+                echo "  Usage: ./exec unregister [OPTIONS]"
                 echo ""
                 echo "    This will unregister the qemu-arm-static interpreter."
                 echo ""
